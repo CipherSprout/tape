@@ -1,13 +1,11 @@
 import InterweaveContent from '@components/Common/InterweaveContent'
 import useAppStore from '@lib/store'
-import useProfileStore from '@lib/store/idb/profile'
 import { tw } from '@tape.xyz/browser'
 import {
   getCategoryName,
   getIsSensitiveContent,
   getPublicationData,
   getPublicationMediaUrl,
-  getShouldUploadVideo,
   getThumbnailUrl,
   imageCdn,
   sanitizeDStorageUrl
@@ -34,35 +32,23 @@ const RenderPlayer = memo(function ({ video }: { video: PrimaryPublication }) {
   const metadata = video.metadata as VideoMetadataV3
   const isSensitiveContent = getIsSensitiveContent(metadata, video.id)
   const videoWatchTime = useAppStore((state) => state.videoWatchTime)
-  const { activeProfile } = useProfileStore()
 
   const isBytesVideo = metadata.isShortVideo
   const thumbnailUrl = imageCdn(
     sanitizeDStorageUrl(getThumbnailUrl(metadata, true)),
     isBytesVideo ? 'THUMBNAIL_V' : 'THUMBNAIL'
   )
-  const videoUrl = getPublicationMediaUrl(metadata)
-
-  const refCallback = (ref: HTMLMediaElement) => {
-    if (ref) {
-      ref.autoplay = true
-    }
-  }
+  const url = getPublicationMediaUrl(metadata)
+  const title = getPublicationData(metadata)?.title || ''
 
   return (
     <div className="rounded-large overflow-hidden">
       <VideoPlayer
-        address={activeProfile?.ownedBy.address}
-        refCallback={refCallback}
-        currentTime={videoWatchTime}
-        url={videoUrl}
-        posterUrl={thumbnailUrl}
-        options={{
-          loadingSpinner: true,
-          isCurrentlyShown: true
-        }}
+        url={url}
+        title={title}
+        poster={thumbnailUrl}
+        timestamp={videoWatchTime}
         isSensitiveContent={isSensitiveContent}
-        shouldUpload={getShouldUploadVideo(video)}
       />
     </div>
   )

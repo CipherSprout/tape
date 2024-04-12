@@ -1,7 +1,6 @@
 'use client'
 
-import { LivepeerConfig } from '@livepeer/react'
-import { getLivepeerClient, setFingerprint, tapeFont } from '@tape.xyz/browser'
+import { setFingerprint, tapeFont } from '@tape.xyz/browser'
 import { getPublication } from '@tape.xyz/generic'
 import type { AnyPublication } from '@tape.xyz/lens'
 import type { FC } from 'react'
@@ -23,9 +22,7 @@ const Publication: FC<Props> = ({ publication }) => {
 
   return (
     <div className={tapeFont.className}>
-      <LivepeerConfig client={getLivepeerClient()}>
-        <Video video={target} />
-      </LivepeerConfig>
+      <Video video={target} />
     </div>
   )
 }
